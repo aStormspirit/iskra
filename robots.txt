@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://astormspirit.github.io/iskra
+Sitemap: https://astormspirit.github.io/iskra/sitemap.xml
