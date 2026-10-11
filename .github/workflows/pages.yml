@@ -51,7 +51,8 @@ jobs:
           if [[ -n "$CHAT_API_URL" ]]; then
             echo "NEXT_PUBLIC_CHAT_API_URL=${CHAT_API_URL}" >> "$GITHUB_ENV"
           else
-            echo "NEXT_PUBLIC_CHAT_API_URL=https://api.chatwithyou.site" >> "$GITHUB_ENV"
+            # pay.* already points at the VPS Caddy; /api/v1/* → web-gateway.
+            echo "NEXT_PUBLIC_CHAT_API_URL=https://pay.chatwithyou.site" >> "$GITHUB_ENV"
           fi
 
       - name: Build
