@@ -81,7 +81,7 @@ export class ChatApi {
     }
     // 401/403 от Chat API означают неверный APP token, а не гостевой: браузеру это 502.
     if (response.status === 401 || response.status === 403) {
-      throw new ChatApiError(502, "Chat API отклонил токен приложения");
+      throw new ChatApiError(502, `Chat API отклонил токен приложения (HTTP ${response.status})`);
     }
     throw new ChatApiError(response.status, text || response.statusText);
   }
