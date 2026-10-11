@@ -13,16 +13,16 @@ export function Footer() {
           <p className="footer-title">Продукт</p>
           <ul>
             <li>
-              <a href="#features">Возможности</a>
+              <a href="/#features">Возможности</a>
             </li>
             <li>
-              <a href="#how">Как работает</a>
+              <a href="/#how">Как работает</a>
             </li>
             <li>
-              <a href="#premium">Премиум</a>
+              <a href="/#premium">Премиум</a>
             </li>
             <li>
-              <a href="#faq">FAQ</a>
+              <a href="/#faq">FAQ</a>
             </li>
           </ul>
         </div>
@@ -33,7 +33,10 @@ export function Footer() {
               <VkLink>Написать боту</VkLink>
             </li>
             <li>
-              <a href="#about">О сервисе</a>
+              <a href="/chat/">Чат на сайте</a>
+            </li>
+            <li>
+              <a href="/#about">О сервисе</a>
             </li>
           </ul>
         </div>

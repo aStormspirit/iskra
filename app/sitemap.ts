@@ -7,9 +7,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: siteUrl,
-      lastModified: "2026-10-07",
+      lastModified: "2026-10-11",
       changeFrequency: "monthly",
       priority: 1,
+    },
+    {
+      url: `${siteUrl}/chat/`,
+      lastModified: "2026-10-11",
+      changeFrequency: "weekly",
+      priority: 0.8,
     },
   ];
 }
