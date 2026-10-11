@@ -51,8 +51,8 @@ jobs:
           if [[ -n "$CHAT_API_URL" ]]; then
             echo "NEXT_PUBLIC_CHAT_API_URL=${CHAT_API_URL}" >> "$GITHUB_ENV"
           else
-            # pay.* already points at the VPS Caddy; /api/v1/* → web-gateway.
-            echo "NEXT_PUBLIC_CHAT_API_URL=https://pay.chatwithyou.site" >> "$GITHUB_ENV"
+            # Cloudflare Access must bypass /api/v1/* on this host for browser clients.
+            echo "NEXT_PUBLIC_CHAT_API_URL=https://api.chatwithyou.site" >> "$GITHUB_ENV"
           fi
 
       - name: Build
