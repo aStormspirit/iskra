@@ -220,8 +220,8 @@ export function ChatRoom() {
         <div className="chat-card">
           <h1>Чат пока недоступен</h1>
           <p className="chat-lead">
-            Задайте <code>NEXT_PUBLIC_CHAT_API_URL</code> — адрес web-gateway
-            dating-bot (локально обычно <code>http://127.0.0.1:8001</code>).
+            Задайте <code>NEXT_PUBLIC_CHAT_API_URL</code> — адрес Worker чата
+            (локально обычно <code>http://127.0.0.1:8787</code>).
           </p>
         </div>
       </section>

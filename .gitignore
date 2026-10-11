@@ -6,3 +6,6 @@ build
 *.tsbuildinfo
 npm-debug.log*
 .DS_Store
+worker/.wrangler
+worker/dist
+worker/.dev.vars*

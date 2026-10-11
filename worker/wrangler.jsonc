@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "iskra-chat",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-11",
+  "workers_dev": false,
+  "routes": [{ "pattern": "chatwithyou.site/api/*", "zone_name": "chatwithyou.site" }],
+  "vars": {
+    "CHAT_API_URL": "https://api.chatwithyou.site",
+    "WEB_BOT_KEY": "site",
+    "ALLOWED_ORIGINS": "http://localhost:3000"
+  },
+  // Secrets (wrangler secret put): CHAT_API_APP_TOKEN, GUEST_JWT_SECRET,
+  // CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET.
+  "durable_objects": {
+    "bindings": [{ "name": "GUEST_HUB", "class_name": "GuestHub" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["GuestHub"] }],
+  "observability": {
+    "enabled": true,
+    "traces": { "enabled": true }
+  }
+}

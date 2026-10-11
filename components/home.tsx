@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { VkLink } from "@/components/vk-link";
 import { Faq } from "@/components/faq";
 import { Icon, type IconName } from "@/components/icon";
@@ -35,7 +36,9 @@ export function Home() {
                 <Icon name="moon" />
               </span>
             </div>
-            <VkLink className="btn btn-lime btn-lg">Начать чат</VkLink>
+            <Link className="btn btn-lime btn-lg" href="/chat/">
+              Начать чат
+            </Link>
           </div>
         </div>
       </section>
@@ -125,7 +128,9 @@ export function Home() {
                 </p>
                 <p className="tariff-old">{"oldPrice" in tariff ? tariff.oldPrice : ""}</p>
                 <p className="tariff-day">{"perDay" in tariff ? tariff.perDay : ""}</p>
-                <VkLink className="btn tariff-btn">Начать чат</VkLink>
+                <Link className="btn tariff-btn" href="/chat/">
+                  Начать чат
+                </Link>
               </article>
             ))}
           </div>
@@ -170,8 +175,10 @@ export function Home() {
       <section className="cta-band">
         <div className="wrap cta-inner">
           <h2>Готов начать диалог?</h2>
-          <p>Открой бота во ВКонтакте и нажми «Поиск».</p>
-          <VkLink className="btn btn-lime btn-lg">Начать чат</VkLink>
+          <p>Пиши прямо на сайте — без регистрации и анкеты.</p>
+          <Link className="btn btn-lime btn-lg" href="/chat/">
+            Начать чат
+          </Link>
         </div>
       </section>
 
