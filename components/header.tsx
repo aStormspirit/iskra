@@ -1,17 +1,27 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { VkLink } from "@/components/vk-link";
 import { Logo } from "@/components/logo";
 
-const links = [
-  { href: "#features", label: "Возможности" },
-  { href: "#how", label: "Как работает" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#about", label: "О сервисе" },
+const homeLinks = [
+  { href: "/#features", label: "Возможности" },
+  { href: "/#how", label: "Как работает" },
+  { href: "/#faq", label: "FAQ" },
+  { href: "/#about", label: "О сервисе" },
+  { href: "/chat/", label: "Чат" },
+];
+
+const chatLinks = [
+  { href: "/", label: "На главную" },
+  { href: "/chat/", label: "Чат" },
 ];
 
 export function Header() {
+  const pathname = usePathname();
+  const onChat = pathname === "/chat" || pathname === "/chat/";
+  const links = onChat ? chatLinks : homeLinks;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -48,16 +58,14 @@ export function Header() {
         </button>
         <nav className={open ? "nav is-open" : "nav"} id="nav" aria-label="Главная навигация">
           {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setOpen(false)}
-            >
+            <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
-        <VkLink className="btn btn-lime header-cta">Начать</VkLink>
+        <Link className="btn btn-lime header-cta" href="/chat/">
+          {onChat ? "В чат" : "Начать"}
+        </Link>
       </header>
     </div>
   );

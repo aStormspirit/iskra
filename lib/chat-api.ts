@@ -1,0 +1,191 @@
+/** Клиент публичного web-gateway (dating-bot). APP token на сервере gateway. */
+
+export type Phase = "idle" | "searching" | "chatting";
+
+export type ChatEvent =
+  | { type: "partner_found" }
+  | { type: "message"; text: string }
+  | { type: "partner_left"; reason?: string };
+
+export type GuestSession = {
+  token: string;
+  guestId: number;
+};
+
+const TOKEN_KEY = "iskra_guest_token";
+const GUEST_KEY = "iskra_guest_id";
+
+export function chatApiBaseUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_CHAT_API_URL?.trim();
+  if (!raw) {
+    throw new Error("Не задан NEXT_PUBLIC_CHAT_API_URL");
+  }
+  return raw.replace(/\/$/, "");
+}
+
+export function chatApiConfigured(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_CHAT_API_URL?.trim());
+}
+
+function wsBaseUrl(httpBase: string): string {
+  if (httpBase.startsWith("https://")) {
+    return "wss://" + httpBase.slice("https://".length);
+  }
+  if (httpBase.startsWith("http://")) {
+    return "ws://" + httpBase.slice("http://".length);
+  }
+  return httpBase;
+}
+
+export function loadStoredGuest(): GuestSession | null {
+  if (typeof window === "undefined") return null;
+  const token = window.localStorage.getItem(TOKEN_KEY);
+  const guestRaw = window.localStorage.getItem(GUEST_KEY);
+  if (!token || !guestRaw) return null;
+  const guestId = Number(guestRaw);
+  if (!Number.isFinite(guestId) || guestId <= 0) return null;
+  return { token, guestId };
+}
+
+export function storeGuest(session: GuestSession): void {
+  window.localStorage.setItem(TOKEN_KEY, session.token);
+  window.localStorage.setItem(GUEST_KEY, String(session.guestId));
+}
+
+export function clearStoredGuest(): void {
+  window.localStorage.removeItem(TOKEN_KEY);
+  window.localStorage.removeItem(GUEST_KEY);
+}
+
+async function api<T>(
+  path: string,
+  token: string | null,
+  init?: RequestInit,
+): Promise<T> {
+  const headers = new Headers(init?.headers);
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+  if (init?.body && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+  const response = await fetch(`${chatApiBaseUrl()}${path}`, {
+    ...init,
+    headers,
+  });
+  if (response.status === 204) {
+    return undefined as T;
+  }
+  const text = await response.text();
+  if (!response.ok) {
+    throw new Error(text || `HTTP ${response.status}`);
+  }
+  if (!text) return undefined as T;
+  return JSON.parse(text) as T;
+}
+
+export async function createGuest(): Promise<GuestSession> {
+  const body = await api<{ token: string; guest_id: number }>(
+    "/api/v1/guests",
+    null,
+    { method: "POST" },
+  );
+  const session = { token: body.token, guestId: body.guest_id };
+  storeGuest(session);
+  return session;
+}
+
+export async function ensureGuest(): Promise<GuestSession> {
+  const existing = loadStoredGuest();
+  if (existing) {
+    try {
+      await api("/api/v1/me/visit", existing.token, { method: "POST" });
+      return existing;
+    } catch {
+      clearStoredGuest();
+    }
+  }
+  return createGuest();
+}
+
+export async function getState(token: string): Promise<Phase> {
+  const body = await api<{ phase: Phase }>("/api/v1/me/state", token);
+  return body.phase;
+}
+
+export async function startSearch(token: string): Promise<Phase> {
+  const body = await api<{ phase: Phase }>("/api/v1/me/search", token, {
+    method: "POST",
+  });
+  return body.phase;
+}
+
+export async function stopChat(token: string): Promise<{ wasActive: boolean }> {
+  const body = await api<{ was_active: boolean }>("/api/v1/me/stop", token, {
+    method: "POST",
+  });
+  return { wasActive: body.was_active };
+}
+
+export async function reportAndSearch(token: string): Promise<Phase> {
+  const body = await api<{ phase: Phase }>("/api/v1/me/report", token, {
+    method: "POST",
+  });
+  return body.phase;
+}
+
+export async function sendMessage(
+  token: string,
+  text: string,
+): Promise<{ delivered: boolean; phase: Phase }> {
+  return api("/api/v1/me/messages", token, {
+    method: "POST",
+    body: JSON.stringify({ text }),
+  });
+}
+
+export function openEvents(
+  token: string,
+  onEvent: (event: ChatEvent) => void,
+  onStatus: (status: "connecting" | "open" | "closed") => void,
+): () => void {
+  const url = `${wsBaseUrl(chatApiBaseUrl())}/api/v1/me/events?token=${encodeURIComponent(token)}`;
+  let closed = false;
+  let socket: WebSocket | null = null;
+  let retry = 0;
+  let timer: number | undefined;
+
+  const connect = () => {
+    if (closed) return;
+    onStatus("connecting");
+    socket = new WebSocket(url);
+    socket.onopen = () => {
+      retry = 0;
+      onStatus("open");
+    };
+    socket.onmessage = (message) => {
+      try {
+        const data = JSON.parse(String(message.data)) as ChatEvent;
+        if (data && typeof data.type === "string") onEvent(data);
+      } catch {
+        /* ignore */
+      }
+    };
+    socket.onclose = () => {
+      onStatus("closed");
+      if (closed) return;
+      const delay = Math.min(1000 * 2 ** retry, 15000);
+      retry += 1;
+      timer = window.setTimeout(connect, delay);
+    };
+    socket.onerror = () => {
+      socket?.close();
+    };
+  };
+
+  connect();
+
+  return () => {
+    closed = true;
+    if (timer) window.clearTimeout(timer);
+    socket?.close();
+  };
+}

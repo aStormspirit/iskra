@@ -31,15 +31,28 @@ jobs:
         run: npm ci
 
       - name: Set site URL
+        env:
+          CHAT_API_URL: ${{ secrets.NEXT_PUBLIC_CHAT_API_URL }}
+          CUSTOM_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
         run: |
           owner=$(printf '%s' "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           name="${{ github.event.repository.name }}"
-          if [[ "$name" == *.github.io ]]; then
+          if [[ -n "$CUSTOM_SITE_URL" ]]; then
+            echo "NEXT_PUBLIC_BASE_PATH=" >> "$GITHUB_ENV"
+            echo "NEXT_PUBLIC_SITE_URL=${CUSTOM_SITE_URL}" >> "$GITHUB_ENV"
+          elif [[ "$name" == *.github.io ]]; then
             echo "NEXT_PUBLIC_BASE_PATH=" >> "$GITHUB_ENV"
             echo "NEXT_PUBLIC_SITE_URL=https://${owner}.github.io" >> "$GITHUB_ENV"
           else
-            echo "NEXT_PUBLIC_BASE_PATH=/${name}" >> "$GITHUB_ENV"
-            echo "NEXT_PUBLIC_SITE_URL=https://${owner}.github.io/${name}" >> "$GITHUB_ENV"
+            # Custom domain chatwithyou.site is the intended prod host.
+            echo "NEXT_PUBLIC_BASE_PATH=" >> "$GITHUB_ENV"
+            echo "NEXT_PUBLIC_SITE_URL=https://chatwithyou.site" >> "$GITHUB_ENV"
+          fi
+          if [[ -n "$CHAT_API_URL" ]]; then
+            echo "NEXT_PUBLIC_CHAT_API_URL=${CHAT_API_URL}" >> "$GITHUB_ENV"
+          else
+            # pay.* already points at the VPS Caddy; /api/v1/* → web-gateway.
+            echo "NEXT_PUBLIC_CHAT_API_URL=https://pay.chatwithyou.site" >> "$GITHUB_ENV"
           fi
 
       - name: Build
