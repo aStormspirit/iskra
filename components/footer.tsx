@@ -1,4 +1,5 @@
-import { supportEmail } from "@/lib/site";
+import { Icon } from "@/components/icon";
+import { supportEmail, telegramBotUrl, vkChatUrl } from "@/lib/site";
 
 const supportMail = `mailto:${supportEmail}`;
 
@@ -53,10 +54,29 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="wrap copy">
-        <p>© 2026 Самозанятый Шинкаренко Владимир Артемович</p>
-        <p>ИНН: 781312974811</p>
-        <p>Статус: Плательщик налога на профессиональный доход (самозанятый)</p>
+      <div className="copy-bar">
+        <div className="wrap copy">
+          <p className="copy-legal">
+            © 2026 ChatWithYou. Все права защищены.
+            <br />
+            <span>
+              Шинкаренко В.А. ИНН: 781312974811
+              <br />
+              Плательщик налога на профессиональный доход (самозанятый)
+            </span>
+          </p>
+          <div className="copy-icons">
+            <a className="copy-icon" href={telegramBotUrl} aria-label="Telegram">
+              <Icon name="telegram" />
+            </a>
+            <a className="copy-icon" href={vkChatUrl} aria-label="ВКонтакте">
+              <Icon name="vk" />
+            </a>
+            <a className="copy-icon" href="/" aria-label="Сайт">
+              <Icon name="globe" />
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
