@@ -104,9 +104,9 @@ export function Home() {
                 <p className="tariff-day">
                   {"perDay" in tariff && typeof tariff.perDay === "string" ? tariff.perDay : ""}
                 </p>
-                <Link className="btn tariff-btn" href={payUrl}>
+                <a className="btn tariff-btn" href={payUrl}>
                   Оплатить
-                </Link>
+                </a>
               </article>
             ))}
           </div>

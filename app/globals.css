@@ -781,29 +781,6 @@
     display: block;
   }
 
-  .pay-stub {
-    max-width: 36rem;
-    margin-inline: auto;
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: 1.5rem;
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-    text-align: center;
-  }
-
-  .pay-stub h1 {
-    font-size: var(--text-xl);
-  }
-
-  .pay-stub p {
-    margin: 0.85rem 0 1.4rem;
-    color: var(--muted);
-  }
-
-  .pay-stub .btn {
-    display: inline-flex;
-  }
-
   .cta-band {
     background: var(--orange);
     color: #fff;
