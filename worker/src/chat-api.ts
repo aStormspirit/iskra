@@ -11,6 +11,17 @@ export class ChatApiError extends Error {
 
 export type PeerAction = "visit" | "state" | "search" | "stop" | "report" | "messages";
 
+export type PresenceStats = {
+  online: number;
+  searching: number;
+  chatting: number;
+};
+
+export type ChatStats = PresenceStats & {
+  humans: PresenceStats;
+  bots: PresenceStats;
+};
+
 export class ChatApi {
   private readonly root: string;
 
@@ -43,6 +54,11 @@ export class ChatApi {
     if (response.status === 204) return undefined;
     const text = await response.text();
     return text ? (JSON.parse(text) as T) : undefined;
+  }
+
+  async stats(): Promise<ChatStats> {
+    const response = await this.send("/api/v1/stats", { headers: this.headers() });
+    return response.json() as Promise<ChatStats>;
   }
 
   async health(): Promise<boolean> {

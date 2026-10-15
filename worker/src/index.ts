@@ -109,6 +109,7 @@ async function route(request: Request, env: Env): Promise<Response> {
   if (!pathname.startsWith(`${API_PREFIX}/`)) return errorResponse(404, "Не найдено");
 
   const path = pathname.slice(API_PREFIX.length);
+  if (request.method === "GET" && path === "/stats") return json(await new ChatApi(env).stats());
   if (request.method === "POST" && path === "/guests") return createGuest(env);
   if (request.method === "GET" && path === "/me/events") return openGuestEvents(request, env);
   return guestAction(request, env, `${request.method} ${path}`);

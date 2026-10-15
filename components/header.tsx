@@ -9,7 +9,6 @@ const homeLinks = [
   { href: "/#features", label: "Возможности" },
   { href: "/#how", label: "Как работает" },
   { href: "/#faq", label: "FAQ" },
-  { href: "/#about", label: "О сервисе" },
   { href: "/chat/", label: "Чат" },
 ];
 
@@ -64,7 +63,7 @@ export function Header() {
           ))}
         </nav>
         <Link className="btn btn-lime header-cta" href="/chat/">
-          {onChat ? "В чат" : "Начать"}
+          {onChat ? "В чат" : "Начать чат"}
         </Link>
       </header>
     </div>

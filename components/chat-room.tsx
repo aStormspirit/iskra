@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
+  activePeople,
   chatApiConfigured,
-  clearStoredGuest,
   ensureGuest,
   getState,
+  getStats,
   openEvents,
   reportAndSearch,
   sendMessage,
@@ -21,11 +22,24 @@ type UiMessage = {
   text: string;
 };
 
-const phaseLabel: Record<Phase, string> = {
-  idle: "Готов к поиску",
+const phaseLabel: Record<Exclude<Phase, "idle">, string> = {
   searching: "Ищем собеседника…",
   chatting: "Диалог",
 };
+
+function formatOnline(count: number): string {
+  const mod100 = count % 100;
+  const mod10 = count % 10;
+  const word =
+    mod100 > 10 && mod100 < 20
+      ? "человек"
+      : mod10 === 1
+        ? "человек"
+        : mod10 >= 2 && mod10 <= 4
+          ? "человека"
+          : "человек";
+  return `${count} ${word} онлайн`;
+}
 
 function nextId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -33,8 +47,8 @@ function nextId(): string {
 
 export function ChatRoom() {
   const configured = chatApiConfigured();
-  const [sessionTick, setSessionTick] = useState(0);
   const [ready, setReady] = useState(false);
+  const [online, setOnline] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [wsStatus, setWsStatus] = useState<"connecting" | "open" | "closed">(
@@ -121,7 +135,28 @@ export function ChatRoom() {
       cancelled = true;
       closeWs?.();
     };
-  }, [configured, sessionTick]);
+  }, [configured]);
+
+  useEffect(() => {
+    if (!configured) return;
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const stats = await getStats();
+        if (!cancelled) setOnline(activePeople(stats));
+      } catch {
+        /* Счётчик не должен ломать сам чат. */
+      }
+    };
+
+    void load();
+    const timer = window.setInterval(load, 5000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [configured]);
 
   useEffect(() => {
     const node = listRef.current;
@@ -203,17 +238,6 @@ export function ChatRoom() {
     }
   }
 
-  async function handleResetSession() {
-    await withToken(stopChat);
-    clearStoredGuest();
-    tokenRef.current = null;
-    setMessages([]);
-    setPhase("idle");
-    setReady(false);
-    setError(null);
-    setSessionTick((value) => value + 1);
-  }
-
   if (!configured) {
     return (
       <section className="chat-shell">
@@ -239,7 +263,8 @@ export function ChatRoom() {
           <div className="chat-meta" aria-live="polite">
             <span className={`chat-dot chat-dot-${wsStatus}`} />
             <span>
-              {phaseLabel[phase]}
+              {online === null ? "…" : formatOnline(online)}
+              {phase === "idle" ? "" : ` · ${phaseLabel[phase]}`}
               {wsStatus !== "open" ? " · соединение…" : ""}
             </span>
           </div>
@@ -322,14 +347,6 @@ export function ChatRoom() {
               </button>
             </>
           ) : null}
-          <button
-            type="button"
-            className="btn btn-ghost"
-            disabled={busy}
-            onClick={handleResetSession}
-          >
-            Новая сессия
-          </button>
         </div>
 
         <form className="chat-composer" onSubmit={handleSend}>

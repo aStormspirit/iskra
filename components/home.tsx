@@ -2,7 +2,7 @@ import Link from "next/link";
 import { VkLink } from "@/components/vk-link";
 import { Faq } from "@/components/faq";
 import { Icon, type IconName } from "@/components/icon";
-import { features, reviews, steps, tariffs } from "@/lib/site";
+import { features, payUrl, premiumPerks, steps, tariffs, telegramBotUrl, vkChatUrl } from "@/lib/site";
 
 export function Home() {
   return (
@@ -18,23 +18,13 @@ export function Home() {
             <p className="lede">
               Общайся анонимно в Телеграме и ВКонтакте.
             </p>
-            <p className="hero-stat">Более 10 000 пользователей</p>
-            <div className="icon-row" aria-hidden="true">
-              <span className="tile tile-purple">
-                <Icon name="heart" />
-              </span>
-              <span className="tile tile-green">
-                <Icon name="people" />
-              </span>
-              <span className="tile tile-orange">
-                <Icon name="chat" />
-              </span>
-              <span className="tile tile-yellow">
-                <Icon name="star" />
-              </span>
-              <span className="tile tile-blue">
-                <Icon name="moon" />
-              </span>
+            <div className="icon-row">
+              <a className="tile tile-vk" href={vkChatUrl} aria-label="ВКонтакте">
+                <Icon name="vk" />
+              </a>
+              <a className="tile tile-tg" href={telegramBotUrl} aria-label="Telegram">
+                <Icon name="telegram" />
+              </a>
             </div>
             <Link className="btn btn-lime btn-lg" href="/chat/">
               Начать чат
@@ -50,13 +40,12 @@ export function Home() {
               <path fill="#ffe14a" d="M40 4l6 22 22 6-22 6-6 22-6-22-22-6 22-6z" />
             </svg>
             <h2>Ваши возможности</h2>
-            <p className="section-lead">Всё, что уже есть в диалоге с ботом</p>
           </div>
           <div className="cards">
             {features.map((feature) => (
               <article className="card" key={feature.title}>
                 <span className={`card-icon icon-${feature.tone}`}>
-                  <Icon name={feature.icon as IconName} />
+                  <Icon name={feature.icon as IconName} stroke />
                 </span>
                 <h3>{feature.title}</h3>
                 <p>{feature.text}</p>
@@ -76,7 +65,7 @@ export function Home() {
             {steps.map((step) => (
               <li key={step.title}>
                 <span className={`step-icon step-${step.tone}`}>
-                  <Icon name={step.icon as IconName} />
+                  <Icon name={step.icon as IconName} stroke />
                 </span>
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
@@ -85,23 +74,6 @@ export function Home() {
           </ol>
           <div className="center">
             <VkLink className="btn btn-lime btn-lg">Начать знакомство</VkLink>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="reviews">
-        <div className="wrap">
-          <div className="section-head">
-            <h2>Отзывы</h2>
-            <p className="section-lead">Более 10 000 пользователей уже знакомятся и общаются</p>
-          </div>
-          <div className="reviews">
-            {reviews.map((review) => (
-              <figure className="review" key={review.name}>
-                <blockquote>{review.text}</blockquote>
-                <figcaption>{review.name}</figcaption>
-              </figure>
-            ))}
           </div>
         </div>
       </section>
@@ -128,44 +100,32 @@ export function Home() {
                 </p>
                 <p className="tariff-old">{"oldPrice" in tariff ? tariff.oldPrice : ""}</p>
                 <p className="tariff-day">{"perDay" in tariff ? tariff.perDay : ""}</p>
-                <Link className="btn tariff-btn" href="/chat/">
-                  Начать чат
+                <Link className="btn tariff-btn" href={payUrl}>
+                  Оплатить
                 </Link>
               </article>
             ))}
           </div>
           <p className="tariff-note">
             Совершая покупку, вы соглашаетесь с{" "}
-            <a href="#privacy">Политикой конфиденциальности</a>,{" "}
-            <a href="#terms">Условиями сервиса</a> и <a href="#premium">Тарифами</a>.
+            <Link href="/policy/">Политикой конфиденциальности</Link>,{" "}
+            <Link href="/terms/">Условиями сервиса</Link> и <a href="#premium">Тарифами</a>.
           </p>
-        </div>
-      </section>
-
-      <section className="section" id="about">
-        <div className="wrap">
-          <div className="about">
-            <div className="about-copy">
-              <h2>О сервисе</h2>
-              <p>
-                Искра — анонимный чат во ВКонтакте для знакомств и общения. Не нужно заполнять
-                анкету: пишешь в диалог, выбираешь, кого искать, и получаешь первое сообщение.
-              </p>
+          <div className="premium-perks">
+            <div className="section-head">
+              <h2>Что дает Премиум-подписка</h2>
             </div>
-            <dl className="facts">
-              <div>
-                <dt>Где</dt>
-                <dd>Вконтакте и Телеграмм</dd>
-              </div>
-              <div>
-                <dt>С кем</dt>
-                <dd>Мужчина, Женщина, случайно</dd>
-              </div>
-              <div>
-                <dt>Кому</dt>
-                <dd>Тематические комнаты, Флирт, Общение и т.д.</dd>
-              </div>
-            </dl>
+            <div className="cards">
+              {premiumPerks.map((perk) => (
+                <article className="card" key={perk.title}>
+                  <span className={`card-icon icon-${perk.tone}`}>
+                    <Icon name={perk.icon as IconName} stroke />
+                  </span>
+                  <h3>{perk.title}</h3>
+                  <p>{perk.text}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -179,33 +139,6 @@ export function Home() {
           <Link className="btn btn-lime btn-lg" href="/chat/">
             Начать чат
           </Link>
-        </div>
-      </section>
-
-      <section className="section legal" id="privacy">
-        <div className="wrap legal-grid">
-          <article>
-            <h2>Конфиденциальность</h2>
-            <p>
-              Переписка идёт в диалоге сообщества ВКонтакте. Сообщения видит ВКонтакте по своим
-              правилам. Бот хранит состояние текущего диалога, чтобы отвечать в той же
-              переписке: этап поиска, выбранный пол и текст реплик.
-            </p>
-            <p>
-              Не присылайте пароли, коды из смс и данные карт. Чтобы остановить диалог, нажмите
-              «Закончить диалог».
-            </p>
-          </article>
-          <article id="terms">
-            <h2>Условия</h2>
-            <p>
-              В переписке нельзя рекламировать услуги и рассылать спам.
-            </p>
-            <p>
-              Бот может завершить диалог, если собеседник просит остановиться. Искра не обещает
-              знакомство с конкретным человеком.
-            </p>
-          </article>
         </div>
       </section>
     </>

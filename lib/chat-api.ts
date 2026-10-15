@@ -12,19 +12,35 @@ export type GuestSession = {
   guestId: number;
 };
 
+export type PresenceStats = {
+  online: number;
+  searching: number;
+  chatting: number;
+};
+
+export type ChatStats = PresenceStats & {
+  humans: PresenceStats;
+  bots: PresenceStats;
+};
+
+/** В счётчике всегда есть два бота владельца, даже если API их сейчас не видит. */
+const OWN_BOTS = 2;
+
+export function activePeople(stats: ChatStats): number {
+  return stats.humans.online + Math.max(stats.bots.online, OWN_BOTS);
+}
+
 const TOKEN_KEY = "iskra_guest_token";
 const GUEST_KEY = "iskra_guest_id";
+const DEFAULT_CHAT_API_URL = "https://chatwithyou.site";
 
 export function chatApiBaseUrl(): string {
-  const raw = process.env.NEXT_PUBLIC_CHAT_API_URL?.trim();
-  if (!raw) {
-    throw new Error("Не задан NEXT_PUBLIC_CHAT_API_URL");
-  }
+  const raw = process.env.NEXT_PUBLIC_CHAT_API_URL?.trim() || DEFAULT_CHAT_API_URL;
   return raw.replace(/\/$/, "");
 }
 
 export function chatApiConfigured(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_CHAT_API_URL?.trim());
+  return Boolean(chatApiBaseUrl());
 }
 
 function wsBaseUrl(httpBase: string): string {
@@ -104,6 +120,10 @@ export async function ensureGuest(): Promise<GuestSession> {
     }
   }
   return createGuest();
+}
+
+export async function getStats(): Promise<ChatStats> {
+  return api<ChatStats>("/api/v1/stats", null);
 }
 
 export async function getState(token: string): Promise<Phase> {
