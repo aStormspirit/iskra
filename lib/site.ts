@@ -11,6 +11,8 @@ export const siteDescription =
 
 export const vkUrl = "https://vk.com/im?sel=-242042389";
 
+export const supportEmail = "support@chatwithyou.site";
+
 export const features = [
   {
     icon: "search",
@@ -108,50 +110,31 @@ export const tariffs = [
   {
     id: "trial",
     name: "Пробный",
-    term: "3 дня",
+    term: "ограниченно",
     price: "1",
     badge: "Попробуй",
     badgeTone: "green",
     tone: "slate",
   },
   {
-    id: "start-until",
-    name: "Старт",
-    term: "3 дня",
-    price: "399",
-    perDay: "133 ₽ / день",
-    badge: "до 01.10.2026",
-    badgeTone: "dark",
+    id: "week",
+    name: "Неделя",
+    term: "7 дней",
+    price: "299",
     tone: "blue",
   },
   {
-    id: "start-from",
-    name: "Старт",
-    term: "3 дня",
-    price: "499",
-    perDay: "166 ₽ / день",
-    badge: "с 01.10.2026",
-    badgeTone: "green",
-    tone: "violet",
-  },
-  {
-    id: "optimal",
-    name: "Оптимальный",
+    id: "month",
+    name: "Месяц",
     term: "30 дней",
-    price: "990",
-    oldPrice: "1490₽",
-    perDay: "30 ₽ / день",
-    badge: "популярный",
-    badgeTone: "green",
+    price: "999",
     tone: "orange",
   },
   {
-    id: "max",
-    name: "Максимум",
+    id: "year",
+    name: "Год",
     term: "365 дней",
-    price: "2026",
-    oldPrice: "4990₽",
-    perDay: "6 ₽ / день",
+    price: "2999",
     tone: "purple",
   },
 ] as const;

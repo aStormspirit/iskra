@@ -570,7 +570,7 @@
     font-weight: 800;
   }
 
-  /* Tariffs: a sideways strip until the band is wide enough for five columns. */
+  /* Tariffs: a sideways strip until the band is wide enough for four columns. */
   .tariffs {
     container: tariffs / inline-size;
     background: #111;
@@ -864,6 +864,56 @@
     margin-top: 0.5rem;
   }
 
+  .doc-main {
+    padding:
+      calc(6.75rem + env(safe-area-inset-top))
+      0
+      var(--space-section);
+  }
+
+  .doc {
+    width: min(46rem, calc(100% - 2rem));
+  }
+
+  .doc h1 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-l);
+  }
+
+  .doc h2 {
+    font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+    margin-top: var(--space-xl);
+    margin-bottom: 0.75rem;
+    text-wrap: wrap;
+  }
+
+  .doc h3 {
+    font-size: 1.05rem;
+    margin-top: var(--space-l);
+    margin-bottom: 0.35rem;
+    text-wrap: wrap;
+  }
+
+  .doc p,
+  .doc ul {
+    margin-top: 0.85rem;
+  }
+
+  .doc ul {
+    margin-bottom: 0;
+    padding-left: 1.25rem;
+  }
+
+  .doc li + li {
+    margin-top: 0.45rem;
+  }
+
+  .doc a {
+    color: #c2410c;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+
   .footer {
     padding: 0.75rem 0 max(1.75rem, env(safe-area-inset-bottom));
   }
@@ -885,8 +935,10 @@
   }
 
   .footer-title {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     margin-bottom: 0.35rem;
   }
 
@@ -918,10 +970,15 @@
   }
 
   .copy {
-    text-align: center;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
     color: #9a9186;
     font-size: 0.8125rem;
-    margin: 1.25rem 0 0;
+  }
+
+  .copy p + p {
+    margin-top: 0.2rem;
   }
 
   @container hero (inline-size > 56rem) {
@@ -947,10 +1004,10 @@
     }
   }
 
-  @container tariffs (inline-size > 64rem) {
+  @container tariffs (inline-size > 52rem) {
     .tariff-scroller {
       grid-auto-flow: row;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       grid-auto-columns: auto;
       overflow: visible;
     }
@@ -978,7 +1035,7 @@
     }
 
     .footer-grid {
-      grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
@@ -1009,7 +1066,7 @@
   }
 
   .chat-shell {
-    width: min(44rem, calc(100% - 2rem));
+    width: calc(100% - 2rem);
     margin: 0 auto;
     padding:
       calc(6.5rem + env(safe-area-inset-top))
@@ -1023,9 +1080,10 @@
     border-radius: 1.75rem;
     padding: clamp(1.1rem, 3vw, 1.6rem);
     box-shadow: var(--shadow);
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
-    min-height: min(38rem, calc(100vh - 9rem));
+    min-height: calc(100dvh - 8.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   }
 
   .chat-head {
@@ -1099,8 +1157,8 @@
   }
 
   .chat-messages {
-    min-height: 16rem;
-    max-height: min(28rem, 48vh);
+    flex: 1;
+    min-height: 12rem;
     overflow: auto;
     display: grid;
     gap: 0.55rem;

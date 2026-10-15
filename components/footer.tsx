@@ -1,14 +1,11 @@
-import { VkLink } from "@/components/vk-link";
-import { Logo } from "@/components/logo";
+import { supportEmail } from "@/lib/site";
+
+const supportMail = `mailto:${supportEmail}`;
 
 export function Footer() {
   return (
     <footer className="footer">
       <div className="wrap footer-grid">
-        <div className="footer-brand">
-          <Logo />
-          <p className="footer-note">Анонимный чат для знакомств и общения во ВКонтакте.</p>
-        </div>
         <div>
           <p className="footer-title">Продукт</p>
           <ul>
@@ -16,7 +13,7 @@ export function Footer() {
               <a href="/#features">Возможности</a>
             </li>
             <li>
-              <a href="/#how">Как работает</a>
+              <a href="/#premium">Тарифы</a>
             </li>
             <li>
               <a href="/#premium">Премиум</a>
@@ -30,13 +27,7 @@ export function Footer() {
           <p className="footer-title">Поддержка</p>
           <ul>
             <li>
-              <VkLink>Написать боту</VkLink>
-            </li>
-            <li>
-              <a href="/chat/">Чат на сайте</a>
-            </li>
-            <li>
-              <a href="/#about">О сервисе</a>
+              <a href={supportMail}>Email</a>
             </li>
           </ul>
         </div>
@@ -44,15 +35,29 @@ export function Footer() {
           <p className="footer-title">Правовая информация</p>
           <ul>
             <li>
-              <a href="#privacy">Конфиденциальность</a>
+              <a href="/policy/">Политика конфиденциальности</a>
             </li>
             <li>
-              <a href="#terms">Условия</a>
+              <a href="/terms/">Условия использования</a>
+            </li>
+            <li>
+              <a href={`${supportMail}?subject=${encodeURIComponent("Отмена подписки")}`}>
+                Отмена подписки
+              </a>
+            </li>
+            <li>
+              <a href={`${supportMail}?subject=${encodeURIComponent("Заявка на возврат")}`}>
+                Заявка на возврат
+              </a>
             </li>
           </ul>
         </div>
       </div>
-      <p className="copy">© 2026 Искра</p>
+      <div className="wrap copy">
+        <p>© 2026 Самозанятый Шинкаренко Владимир Артемович</p>
+        <p>ИНН: 781312974811</p>
+        <p>Статус: Плательщик налога на профессиональный доход (самозанятый)</p>
+      </div>
     </footer>
   );
 }
