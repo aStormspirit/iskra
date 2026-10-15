@@ -98,8 +98,12 @@ export function Home() {
                 <p className="tariff-price">
                   {tariff.price} <span>₽</span>
                 </p>
-                <p className="tariff-old">{"oldPrice" in tariff ? tariff.oldPrice : ""}</p>
-                <p className="tariff-day">{"perDay" in tariff ? tariff.perDay : ""}</p>
+                <p className="tariff-old">
+                  {"oldPrice" in tariff && typeof tariff.oldPrice === "string" ? tariff.oldPrice : ""}
+                </p>
+                <p className="tariff-day">
+                  {"perDay" in tariff && typeof tariff.perDay === "string" ? tariff.perDay : ""}
+                </p>
                 <Link className="btn tariff-btn" href={payUrl}>
                   Оплатить
                 </Link>
