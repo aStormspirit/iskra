@@ -73,6 +73,10 @@
     overflow-wrap: break-word;
   }
 
+  body:has(.doc-main) {
+    background: #fff;
+  }
+
   h1,
   h2,
   h3 {
@@ -795,12 +799,14 @@
   .doc-main {
     padding:
       calc(6.75rem + env(safe-area-inset-top))
-      0
+      clamp(1.5rem, 6vw, 3rem)
       var(--space-section);
+    background: #fff;
   }
 
   .doc {
-    width: min(46rem, calc(100% - 2rem));
+    width: min(42rem, 100%);
+    margin-inline: auto;
   }
 
   .doc h1 {
@@ -825,6 +831,14 @@
   .doc p,
   .doc ul {
     margin-top: 0.85rem;
+  }
+
+  .doc p.clause-3 {
+    margin-left: 1.75rem;
+  }
+
+  .doc p.clause-4 {
+    margin-left: 3.5rem;
   }
 
   .doc ul {

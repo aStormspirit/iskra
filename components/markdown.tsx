@@ -47,7 +47,7 @@ function renderInline(text: string): ReactNode[] {
 }
 
 export function Markdown({ source }: { source: string }) {
-  const blocks = source.replace(/^\uFEFF/, "").split(/\n{2,}/);
+  const blocks = source.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n").split(/\n{2,}/);
 
   return blocks.map((block, index) => {
     const text = block.trim();
@@ -74,6 +74,15 @@ export function Markdown({ source }: { source: string }) {
       return <h3 key={index}>{renderInline(content)}</h3>;
     }
 
-    return <p key={index}>{renderInline(text.replace(/\s+/g, " "))}</p>;
+    const flat = text.replace(/\s+/g, " ");
+    const clause = /^(\d+(?:\.\d+)+)\.?(?:\s|$)/.exec(flat);
+    const depth = clause ? clause[1].split(".").length : 0;
+    const className = depth > 2 ? `clause-${depth}` : undefined;
+
+    return (
+      <p key={index} className={className}>
+        {renderInline(flat)}
+      </p>
+    );
   });
 }
